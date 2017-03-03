@@ -4,6 +4,8 @@
 This is a Docker image to import and simplify water polygons from [OpenStreetMapData](http://openstreetmapdata.com/) using *shp2pgsql* into a PostGIS database.
 The Shapefiles are already baked into the container to make distribution and execution easier.
 
+It has been modified from the original to use a database in 4326 projection.
+
 ## Usage
 
 Provide the database credentials and run `import-water`.

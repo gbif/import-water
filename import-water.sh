@@ -13,7 +13,7 @@ function exec_psql() {
 function import_shp() {
     local shp_file=$1
     local table_name=$2
-    shp2pgsql -s 3857 -I -g geometry "$shp_file" "$table_name" | exec_psql | hide_inserts
+    shp2pgsql -s 4326 -I -g geometry "$shp_file" "$table_name" | exec_psql | hide_inserts
 }
 
 function hide_inserts() {
@@ -22,7 +22,7 @@ function hide_inserts() {
 
 function drop_table() {
     local table=$1
-    local drop_command="DROP TABLE IF EXISTS $table;"
+    local drop_command="DROP TABLE IF EXISTS $table CASCADE;"
     echo "$drop_command" | exec_psql
 }
 
@@ -43,15 +43,19 @@ function import_water() {
 
     local gen1_table_name="osm_ocean_polygon_gen1"
     drop_table "$gen1_table_name"
-    generalize_water "$gen1_table_name" "$table_name" 20
+    generalize_water "$gen1_table_name" "$table_name" 1.6e-9
 
     local gen2_table_name="osm_ocean_polygon_gen2"
     drop_table "$gen2_table_name"
-    generalize_water "$gen2_table_name" "$table_name" 40
+    generalize_water "$gen2_table_name" "$table_name" 3.2e-9
 
     local gen3_table_name="osm_ocean_polygon_gen3"
     drop_table "$gen3_table_name"
-    generalize_water "$gen3_table_name" "$table_name" 80
+    generalize_water "$gen3_table_name" "$table_name" 6.5e-9
+
+    local gen4_table_name="osm_ocean_polygon_gen4"
+    drop_table "$gen4_table_name"
+    generalize_water "$gen4_table_name" "$table_name" 1.3e-8
 }
 
 import_water
